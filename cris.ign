@@ -11,9 +11,15 @@
         ]
       },
       {
+        "groups": [
+          "wheel",
+          "sudo",
+          "docker"
+        ],
         "name": "cris",
+        "passwordHash": "$y$j9T$TgRl0CmgilNLn.QjJOXmG0$UeJCIH6UQjg8JjHup04m2Ybrg5n4PijrsN6MguzPrP1",
         "sshAuthorizedKeys": [
-          "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDDIqNUge7YQEAx3Fe50w3zvSvMrVC1vhACp40vrWnTAQnWRGDX7bbEve965t+y9Tk5HCHiX\u003e"
+          "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDDIqNUge7YQEAx3Fe50w3zvSvMrVC1vhACp40vrWnTAQnWRGDX7bbEve965t+y9Tk5HCHiXVsfPOPVBFxWufi0npCC6JCx4gQHTGkvJdaOclrb5jmExZb7F+RYi+FMulUV6/l6RqfhjtRO6fti6spMA9eX/9q1PJ24tZJfG9l2PjsOtp7vqemlrgy10zAu8944FBNoVHWXl3Y2042T28OuSLnqGB6kSneEiGhYsO9BpmUZB67IrRfpiv57dB6kjKvDP6A0LcJEcGN0AEsnpkWR2aSH6XTDRSlwp57jKMw5JQ7HN27YGUyt/eMqAxrXBimUnAdMtZ4XFeUX+U+qKMi6IQ8gVy9wQZK0xt8Y/O4yXsztavnD40QF/z6k1OBVjAsUM9i4yOXxMJlaWPXWjsJZPaYTMBsu7iNR+OLCy9G1RrBJj+RqYXs8EKlp0EP5G5vt8E+6eVV6+zxxMmls1a9H9nUmyv4Yic81cMN1DlETZS1D3QM2hcgolkOfbIz4cqmompwAiupGCgdWICqSYAEDOzXVlqVc9EZ78V3zIWu73y0KRaar8KrHpa0YLuGJ70W4IcwREdRKhNKQm3SjuS3Sg3TtJ8kN5Hw3f1WUFqS7s1OjHitUpb/a8G0XlsfrV0d0Vjga7lNg37r0rwQITo6ECvX0EV3nMhsVwG7a8uSszw== cris@paperino-popos"
         ]
       }
     ]
@@ -26,6 +32,15 @@
           "source": "data:,r2-d2"
         },
         "mode": 420
+      }
+    ]
+  },
+  "systemd": {
+    "units": [
+      {
+        "contents": "[Unit]\nDescription=Layer cockpit with rpm-ostree\nWants=network-online.target\nAfter=network-online.target\nConditionPathExists=!/var/lib/%N.stamp\n\n[Service]\nType=oneshot\nRemainAfterExit=yes\nExecStart=/usr/bin/rpm-ostree install --apply-live --allow-inactive cockpit-system cockpit-ostree cockpit-podman\nExecStart=/bin/touch /var/lib/%N.stamp\nExecStart=/usr/bin/systemctl enable --now cockpit.socket\n\n[Install]\nWantedBy=multi-user.target",
+        "enabled": true,
+        "name": "rpm-ostree-install-cockpit.service"
       }
     ]
   }
