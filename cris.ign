@@ -50,14 +50,9 @@
         "name": "dev-disk-by\\x2dpartlabel-swap.swap"
       },
       {
-        "contents": "[Unit]\nDescription=Layer cockpit with rpm-ostree\nWants=network-online.target\nAfter=network-online.target\nConditionPathExists=!/var/lib/%N.stamp\n\n[Service]\nType=oneshot\nRemainAfterExit=yes\nExecStart=/usr/bin/rpm-ostree install --apply-live --allow-inactive cockpit-system cockpit-ostree cockpit-podman cockpit-pcp xe-guest-utilities-latest\nExecStart=/bin/touch /var/lib/%N.stamp\n\n[Install]\nWantedBy=multi-user.target\n",
+        "contents": "[Unit]\nDescription=Layer cockpit with rpm-ostree\nWants=network-online.target\nAfter=network-online.target\nConditionPathExists=!/var/lib/%N.stamp\n\n[Service]\nType=oneshot\nRemainAfterExit=yes\nExecStart=/usr/bin/rpm-ostree install --apply-live --allow-inactive cockpit-system cockpit-ostree cockpit-podman cockpit-pcp xe-guest-utilities-latest\nExecStart=/bin/touch /var/lib/%N.stamp\nExecStart=systemctl enable xe-linux-distribution\nExecStart=podman container runlabel --name cockpit-ws RUN docker.io/cockpit/ws\nExecStart=podman container runlabel INSTALL docker.io/cockpit/ws\nExecStart=systemctl enable cockpit.service\n\n[Install]\nWantedBy=multi-user.target",
         "enabled": true,
         "name": "rpm-ostree-install.service"
-      },
-      {
-        "contents": "[Unit]\nDescription=Activate Cockpit!\n\n[Service]\nType=oneshot\nRemainAfterExit=yes\nExecStart=systemctl enable cockpit.service\nExecStart=systemctl enable xe-linux-distribution\nExecStart=podman container runlabel --name cockpit-ws RUN docker.io/cockpit/ws\nExecStart=podman container runlabel INSTALL docker.io/cockpit/ws\n\n[Install]\nWantedBy=multi-user.target",
-        "enabled": true,
-        "name": "cockpit.service"
       }
     ]
   }
