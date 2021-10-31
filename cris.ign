@@ -38,7 +38,7 @@
   "systemd": {
     "units": [
       {
-        "contents": "[Unit]\nDescription=Layer cockpit with rpm-ostree\nWants=network-online.target\nAfter=network-online.target\nConditionPathExists=!/var/lib/%N.stamp\n\n[Service]\nType=oneshot\nRemainAfterExit=yes\nExecStart=/usr/bin/rpm-ostree install --apply-live --allow-inactive cockpit-system cockpit-ostree cockpit-podman\nExecStart=/bin/touch /var/lib/%N.stamp\nExecStart=/usr/bin/systemctl enable --now cockpit.socket\n\n[Install]\nWantedBy=multi-user.target",
+        "contents": "[Unit]\nDescription=Layer cockpit with rpm-ostree\nWants=network-online.target\nAfter=network-online.target\nConditionPathExists=!/var/lib/%N.stamp\n\n[Service]\nType=oneshot\nRemainAfterExit=yes\nExecStart=/usr/bin/rpm-ostree install --apply-live --allow-inactive cockpit-system cockpit-ostree cockpit-podman cockpit-pcp xe-guest-utilities-latest\nExecStart=/bin/touch /var/lib/%N.stamp\nExecStart=echo 'PasswordAuthentication yes' | sudo tee /etc/ssh/sshd_config.d/02-enable-passwords.conf\nExecStart=sudo systemctl try-restart sshd\nExecStart=podman container runlabel --name cockpit-ws RUN docker.io/cockpit/ws\nExecStart=podman container runlabel INSTALL docker.io/cockpit/ws\nExecStart=systemctl enable cockpit.service\nExecStart=systemctl enable xe-linux-distribution\n\n[Install]\nWantedBy=multi-user.target",
         "enabled": true,
         "name": "rpm-ostree-install-cockpit.service"
       }
